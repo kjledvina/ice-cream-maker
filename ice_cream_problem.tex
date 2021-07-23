@@ -1,0 +1,145 @@
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage[font=scriptsize]{caption}
+\usepackage[font=scriptsize]{subcaption}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage[margin=1in]{geometry}
+\usepackage{float}
+\usepackage{xcolor}
+	\definecolor{codegreen}{rgb}{0,0.6,0}
+	\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+	\definecolor{codepurple}{rgb}{0.58,0,0.82}
+	\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+
+
+\begin{document}
+
+\begingroup  
+  \centering
+  \large \textbf{Ice Cream Maker's Problem} \\[0.5em]
+  \normalsize Kirby Ledvina \\
+  \normalsize July 2021 \par
+\endgroup
+
+\subsection*{Single Machine Model}
+
+\noindent\textbf{Definitions}
+\begin{itemize}
+    \item $\mathcal{N}$: Set of $N$ ice cream flavors
+    \item $\mathbf{A}$: Matrix of allowed production orders where $A_{ij}$ is 1 if flavor $j \in \mathcal{N}$ can be made immediately after flavor $i \in \mathcal{N}$ without cleaning, and 0 otherwise
+    %\item $\mathcal{M}$: Set of machines for making ice cream
+    \item $T$: Number of time steps or allowable batches
+    \item $q_i$: Required number of batches of flavor $i \in \mathcal{N}$
+ 
+
+\end{itemize} 
+
+\noindent\textbf{Decision Variables}
+\begin{itemize}
+    \item $x_{it}$: Equals 1 if flavor $i \in \mathcal{N}$ is made in period $t$, 0 otherwise
+    \item $y_{t}$: Equals 1 if the machine is cleaned before period $t$, 0 otherwise
+\end{itemize}
+
+\noindent\textbf{Formulation}
+
+\begin{equation*}
+\begin{aligned}
+& \underset{x,y}{\text{minimize}}
+    &&  \sum_{t=1}^T y_t \\
+& \text{subject to}
+    && \sum_{i=1}^N x_{it} \leq 1
+        &&&\forall t=1,...,T \\
+&
+    & & \sum_{t=1}^{T}{x_{it}} \geq q_i
+        &&&\forall i \in \mathcal{N} \\
+&
+     && \sum_{j=1}^N A_{ij}x_{jt} + y_t \geq x_{i,t-1}
+            &&&\forall i \in \mathcal{N}, t=2,...,T \\
+&
+    & & x_{it} \in \{0,1\}
+        &&&\forall i \in \mathcal{N}, t=1,...,T  \\
+&
+    & & y_{t} \in \{0,1\}
+        &&&\forall t = 1,...,T.
+\end{aligned}
+\end{equation*}
+
+
+\subsection*{Multi-Machine Model}
+
+\noindent\textbf{Definitions}
+\begin{itemize}
+    \item $\mathcal{N}$: Set of $N$ ice cream flavors
+    \item $\mathcal{M}$: Set of $M$ available ice cream machines
+    \item $\mathbf{A}$: Matrix of allowed production orders where $A_{ij}$ is 1 if flavor $j \in \mathcal{N}$ can be made immediately after flavor $i \in \mathcal{N}$ without cleaning, and 0 otherwise
+    %\item $\mathcal{M}$: Set of machines for making ice cream
+    \item $T$: Number of time steps or allowable batches
+    \item $q_i$: Required number of batches of flavor $i \in \mathcal{N}$
+ 
+
+\end{itemize} 
+
+\noindent\textbf{Decision Variables}
+\begin{itemize}
+    \item $x_{imt}$: Equals 1 if flavor $i \in \mathcal{N}$ is made in machine $m \in \mathcal{M}$ in period $t$, 0 otherwise
+    \item $y_{mt}$: Equals 1 if machine $m$ is cleaned before period $t$, 0 otherwise
+\end{itemize}
+
+\noindent\textbf{Formulation}
+
+\begin{equation*}
+\begin{aligned}
+& \underset{x,y}{\text{minimize}}
+    &&  \sum_{t=1}^T \sum_{m=1}^M y_{mt} \\
+& \text{subject to}
+    && \sum_{i=1}^N x_{imt} \leq 1
+        &&&\forall m \in \mathcal{M}, t=1,...,T \\
+&
+    & & \sum_{t=1}^{T}\sum_{m=1}^{M}{x_{imt}} \geq q_i
+        &&&\forall i \in \mathcal{N} \\
+&
+     && \sum_{j=1}^N A_{ij}x_{jmt} + y_{mt} \geq x_{im,t-1}
+            &&&\forall i \in \mathcal{N}, \forall m \in \mathcal{M}, t=2,...,T \\
+&
+    & & x_{imt} \in \{0,1\}
+        &&&\forall i \in \mathcal{N}, m \in \mathcal{M}, t=1,...,T  \\
+&
+    & & y_{mt} \in \{0,1\}
+        &&&\forall m \in \mathcal{M}, t = 1,...,T.
+\end{aligned}
+\end{equation*}
+\end{document}
